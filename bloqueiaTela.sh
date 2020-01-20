@@ -19,6 +19,11 @@
 #				: é o diretório que contém as
 #				: os ícones .png que você deseja
 #				: exibir na tela de bloqueio.
+#			DICAS
+#				: talvez você queira alterar o texto exibido
+#				: na tela de bloqueio ou algumas de suas propriedades,
+#				: já que estão codificadas para resolução 1920x1080.
+#				: Por isso deixei as indicações <<---------------| Alterar propriedades se necessário |---
 #
 #			ATALHO NO I3WM
 #				: inserir tecla de atalho no arquivo de
@@ -96,8 +101,13 @@ maim $bgImg
 # Adiciona efeito blur à captura de tela
 convert $bgImg -blur 0x6 $bgImg
 
-# Cria imagem com texto pedindo para digitar senha # Editar aqui conforme sua tela e preferências
+# Se imagem de texto exister, remove.
 [[ -f $bgText ]] && rm $bgText
+
+# Cria imagem com texto pedindo para digitar senha. <<---------------------------| Alterar propriedades se necessário |---
+# Vc pode modificar 
+#	-size (tamando da imagem largura x altura)
+#	-pointsize (tamanho da fonte)
 convert $bgText -size 3000x150 xc:black \
 				-font Liberation-Sans \
 				-pointsize 70 \
@@ -109,7 +119,9 @@ convert $bgText -alpha set \
 				-channel A \
 				-evaluate set 65% $bgText;
 
-# Junta a captura com a imagem do texto criada anteriormente # Editar aqui conforme sua tela e preferências
+# Junta a captura com a imagem do texto criada anteriormente <<------------------| Alterar propriedades se necessário |---
+# Vc pode modificar
+#	-geometry +0+x (x=altura que a imagem de texto vai ocupar a partir do centro).
 convert $bgImg $bgText -gravity center -geometry +0+400 -composite $bgImg
 
 # Junta o resultado da operação anterior com um ícone aleatório
