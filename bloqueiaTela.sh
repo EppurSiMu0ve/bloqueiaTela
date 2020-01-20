@@ -35,13 +35,6 @@
 #
 # ------------------------------------------------------
 
-# ------------| Dependências externas |-------------- #
-#
-# Para funcionar esse script precisa que os seguintes pacotes estejam instalados
-# e disponíveis para uso na sua máquina:
-# >> maim ( tira capturas de tela do desktop )
-# >> imagemagick ( pacote com várias ferramentas para manipulação de imagens ).
-
 # -------------| Variáveis iniciais |--------------- #
 usuario=$(grep $USER /etc/passwd | cut -d ':' -f5 | cut -d ',' -f1)
 data=$(date +'%d-%m-%Y %H:%M:%S')
@@ -50,6 +43,17 @@ bgImg=/tmp/$(date +'%Y%m%d-%H%M%S').png
 bgText=/tmp/bgText.png
 declare -a arrIcones
 i=0
+
+# ------------| Dependências externas |-------------- #
+#
+# Para funcionar esse script precisa que os seguintes pacotes estejam instalados
+# e disponíveis para uso na sua máquina:
+# >> maim ( tira capturas de tela do desktop )
+# >> imagemagick ( pacote com várias ferramentas para manipulação de imagens ).
+if ( ! which convert maim &> /dev/null ); then
+	tee $errArq <<< "$data Verifique dependências: sudo apt install imagemagick maim"
+	exit 1
+fi
 
 # Testa se o script está sendo chamado com o parâmetro obrigatório
 # Lança descrição do erro no arquivo errArq
