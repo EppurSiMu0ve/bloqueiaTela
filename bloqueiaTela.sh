@@ -35,6 +35,13 @@
 #
 # ------------------------------------------------------
 
+# ------------| Dependências externas |-------------- #
+#
+# Para funcionar esse script precisa que os seguintes pacotes estejam instalados
+# e disponíveis para uso na sua máquina:
+# >> maim ( tira capturas de tela do desktop )
+# >> imagemagick ( pacote com várias ferramentas para manipulação de imagens ).
+
 # -------------| Variáveis iniciais |--------------- #
 usuario=$(grep $USER /etc/passwd | cut -d ':' -f5 | cut -d ',' -f1)
 data=$(date +'%d-%m-%Y %H:%M:%S')
@@ -44,7 +51,7 @@ bgText=/tmp/bgText.png
 declare -a arrIcones
 i=0
 
-# Testa se o script está sendo chamado com os dois parâmetros obrigatórios
+# Testa se o script está sendo chamado com o parâmetro obrigatório
 # Lança descrição do erro no arquivo errArq
 if [[ $# -ne 1 ]]; then
 	tee $errArq <<< "$data Número de parâmetros incorreto ($1). Revise seu comando."
