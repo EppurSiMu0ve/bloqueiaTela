@@ -4,11 +4,11 @@
 #
 # Script		: bloqueiaTela.sh
 # Descrição		: bloqueia a tela do i3wm com a ferramenta i3lock
-# Versão		: 1.1
+# Versão		: 1.2
 # Autor			: Eppur Si Muove
 # Contato		: eppur.si.muove@keemail.me
 # Criação		: 15/01/2020
-# Modificação	: 19/01/2020
+# Modificação		: 27/01/2020
 # Licença		: GNU/GPL v3.0
 #
 # ------------------------------------------------------
@@ -19,6 +19,7 @@
 #				: é o diretório que contém as
 #				: os ícones .png que você deseja
 #				: exibir na tela de bloqueio.
+#
 #			DICAS
 #				: talvez você queira alterar o texto exibido
 #				: na tela de bloqueio ou algumas de suas propriedades,
@@ -42,12 +43,11 @@
 
 # -------------| Variáveis iniciais |--------------- #
 usuario=$(grep $USER /etc/passwd | cut -d ':' -f5 | cut -d ',' -f1)
-data=$(date +'%d-%m-%Y %H:%M:%S')
+data=$(date +'%Y%m%d-%H%M%S')
 errArq="$HOME/ErroBloqueioTela"
-bgImg=/tmp/$(date +'%Y%m%d-%H%M%S').png
-bgText=/tmp/bgText.png
+bgImg="/tmp/$data.png"
+bgText="/tmp/bgText.png"
 declare -a arrIcones
-i=0
 
 # ------------| Dependências externas |-------------- #
 #
@@ -55,7 +55,8 @@ i=0
 # e disponíveis para uso na sua máquina:
 # >> maim ( tira capturas de tela do desktop )
 # >> imagemagick ( pacote com várias ferramentas para manipulação de imagens ).
-if ( ! which convert maim &> /dev/null ); then
+
+if ( ! which convert &> /dev/null ); then
 	tee $errArq <<< "$data Verifique dependências: sudo apt install imagemagick maim"
 	exit 1
 fi
@@ -89,11 +90,8 @@ RANDOM=$$
 # imagens disponíveis na pasta indicada
 rNum=$(( $RANDOM % $(( $numImgs + 1 )) ))
 
-# Armazena o nome de cada imagem em uma posição na matriz arrIcones
-for img in $(ls $1/*.png); do
-	arrIcones[$i]=$img
-	let i++
-done
+# Armazena o nome de cada ícone .png do diretório $1 dentro da array arrIcones
+arrIcones=( $1/*.png )
 
 # Obtem captura da tela e armazena em bgImg
 maim $bgImg
@@ -101,11 +99,8 @@ maim $bgImg
 # Adiciona efeito blur à captura de tela
 convert $bgImg -blur 0x6 $bgImg
 
-# Se imagem de texto exister, remove.
-[[ -f $bgText ]] && rm $bgText
-
 # Cria imagem com texto pedindo para digitar senha. <<---------------------------| Alterar propriedades se necessário |---
-# Vc pode modificar 
+# Vc pode modificar
 #	-size (tamando da imagem largura x altura)
 #	-pointsize (tamanho da fonte)
 convert $bgText -size 3000x150 xc:black \
@@ -125,7 +120,10 @@ convert $bgText -alpha set \
 convert $bgImg $bgText -gravity center -geometry +0+400 -composite $bgImg
 
 # Junta o resultado da operação anterior com um ícone aleatório
-convert $bgImg ${arrIcones[$rNum]} -gravity center -composite $bgImg
+convert $bgImg "${arrIcones[$rNum]}" -gravity center -composite $bgImg
 
 # aciona o bloqueador
 i3lock -t --pointer=default -i $bgImg
+
+# limpa diretório tmp
+rm $bgImg $bgText
